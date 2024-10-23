@@ -161,8 +161,25 @@ def GBFS(matrix, start, end):
         Founded path
     """
     # TODO: 
-    path=[]
-    visited={}
+    path = []
+    visited = {start: None}  # Tạo dictionary để lưu các nút đã thăm
+    stack = [(start, 0)]  # Sử dụng stack để lưu trữ các nút cần thăm, bao gồm trọng số
+    
+    while stack:
+        # Sắp xếp các nút trong stack theo trọng số (chi phí heuristic)
+        stack.sort(key=lambda x: matrix[x[0]][end])  # Giả định matrix chứa trọng số từ nút đến đích
+        curentNode, _ = stack.pop(0)  # Lấy nút đầu tiên trong danh sách đã sắp xếp
+        
+        if curentNode == end:
+            break  # Dừng nếu đã đến nút kết thúc
+
+        for i in range(len(matrix)):
+            if matrix[curentNode][i] != 0 and i not in visited:
+                # Chỉ thêm vào stack nếu chưa được thăm
+                stack.append((i, matrix[i][end]))  # Thêm nút cùng với trọng số heuristic
+                visited[i] = curentNode  # Ghi nhận nút cha của nút hiện tại
+
+    path = reconstructPath(visited, start, end)
     return visited, path
 
 #-------------------------------------------------------------------------
