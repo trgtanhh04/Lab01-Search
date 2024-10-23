@@ -39,15 +39,41 @@ def reconstructPath(visited, start, end):
 
 #     return visited, path
 
-def DFS(matrix, start, end):
-    # TODO: 
+# def DFS(matrix, start, end):
+#     # TODO
+#     path = []
+#     visited = {start: None}
+#     stack = [start]
+
+#     while stack:
+#         # Lấy node hiện tại từ stack (DFS đi theo chiều sâu nên pop từ cuối ngăn xếp)
+#         currentNode = stack.pop()
+
+#         # Nếu node hiện tại là node đích (end) thì dừng
+#         if currentNode == end:
+#             break
+
+#         # Duyệt qua tất cả các node kề của currentNode
+#         for i in range(len(matrix)):
+#             # Kiểm tra xem có đường nối (matrix[currentNode][i] != 0)
+#             # và node i chưa được thăm (i not in visited)
+#             if matrix[currentNode][i] != 0 and i not in visited:
+#                 visited[i] = currentNode
+#                 stack.append(i)
+
+#     # Xây dựng lại đường đi từ start đến end
+#     path = reconstructPath(visited, start, end)
     
+#     return visited, path
+
+def UCS(matrix, start, end):
+    # TODO:  
     path=[]
     visited={}
+    queue = deque([start])
     
-
-   
     return visited, path
+
 
 if __name__ == '__main__':
     matrix = []
@@ -67,30 +93,6 @@ if __name__ == '__main__':
 
 
 
-# def UCS(matrix, start, end):
-#     """
-#     Uniform Cost Search algorithm
-#      Parameters:visited
-#     ---------------------------
-#     matrix: np array
-#         The graph's adjacency matrix
-#     start: integer
-#         starting node
-#     end: integer
-#         ending node
-    
-#     Returns
-#     ---------------------
-#     visited
-#         The dictionary contains visited nodes: each key is a visited node, 
-#         each value is the key's adjacent node which is visited before key.
-#     path: list
-#         Founded path
-#     """
-#     # TODO:  
-#     path=[]
-#     visited={}
-#     return visited, path
 
 
 # def GBFS(matrix, start, end):
