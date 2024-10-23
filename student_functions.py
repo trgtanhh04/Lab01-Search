@@ -1,5 +1,6 @@
 import numpy as np
 from collections import deque
+from queue import PriorityQueue
 
 def reconstructPath(visited, start, end):
     path = []
@@ -66,29 +67,39 @@ def DFS(matrix, start, end):
 
 
 def UCS(matrix, start, end):
-    """
-    Uniform Cost Search algorithm
-     Parameters:visited
-    ---------------------------
-    matrix: np array
-        The graph's adjacency matrix
-    start: integer
-        starting node
-    end: integer
-        ending node
+    # TODO:
+    path = []
+    visited = {start: None}  # Khởi tạo dictionary lưu node đã thăm
+    cost = {start: 0}  # Chi phí từ start đến mỗi node
+
+    # Khởi tạo hàng đợi ưu tiên
+    queue = PriorityQueue()
+    queue.put((0, start))  # Đưa vào hàng đợi với trọng số 0
+
+    while not queue.empty():
+        # Lấy node có chi phí thấp nhất
+        currentWeight, currentNode = queue.get()
+        
+        # Dừng lại khi đến đích
+        if currentNode == end:
+            break
+        
+        # Duyệt các node kề
+        for i in range(len(matrix[currentNode])):
+            if matrix[currentNode][i] != 0:  # Có đường đi đến node i
+                newCost = currentWeight + matrix[currentNode][i]
+                
+                # Nếu chưa thăm hoặc tìm được đường đi tốt hơn
+                if i not in cost or newCost < cost[i]:
+                    cost[i] = newCost
+                    visited[i] = currentNode
+                    queue.put((newCost, i))  # Thêm vào hàng đợi với trọng số mới
+
+    # Trả về visited và đường đi từ start đến end      
+    path = reconstructPath(visited, start, end)
     
-    Returns
-    ---------------------
-    visited
-        The dictionary contains visited nodes: each key is a visited node, 
-        each value is the key's adjacent node which is visited before key.
-    path: list
-        Founded path
-    """
-    # TODO:  
-    path=[]
-    visited={}
     return visited, path
+
 
 
 def GBFS(matrix, start, end):

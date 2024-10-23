@@ -11,7 +11,7 @@ def reconstructPath(visited, start, end):
             node = visited[node] # Truy vết
         path.reverse()  # Đảo ngược để có đường đi từ start đến end
     return path
-
+#-------------------------------------------------------------------------
 # def BFS(matrix, start, end):
 #     #TODO:
 #     path = []
@@ -38,7 +38,7 @@ def reconstructPath(visited, start, end):
 #     path = reconstructPath(visited, start, end)
 
 #     return visited, path
-
+#-------------------------------------------------------------------------
 # def DFS(matrix, start, end):
 #     # TODO
 #     path = []
@@ -65,16 +65,107 @@ def reconstructPath(visited, start, end):
 #     path = reconstructPath(visited, start, end)
     
 #     return visited, path
+#-------------------------------------------------------------------------
+# def UCS(matrix, start, end):
+#     # TODO:
+#     path = []
+#     visited = {start: None}  # Khởi tạo dictionary lưu node đã thăm
+#     cost = {start: 0}  # Chi phí từ start đến mỗi node
 
-def UCS(matrix, start, end):
-    # TODO:  
+#     # Khởi tạo hàng đợi ưu tiên
+#     queue = PriorityQueue()
+#     queue.put((0, start))  # Đưa vào hàng đợi với trọng số 0
+
+#     while not queue.empty():
+#         # Lấy node có chi phí thấp nhất
+#         currentWeight, currentNode = queue.get()
+        
+#         # Dừng lại khi đến đích
+#         if currentNode == end:
+#             break
+        
+#         # Duyệt các node kề
+#         for i in range(len(matrix[currentNode])):
+#             if matrix[currentNode][i] != 0:  # Có đường đi đến node i
+#                 newCost = currentWeight + matrix[currentNode][i]
+                
+#                 # Nếu chưa thăm hoặc tìm được đường đi tốt hơn
+#                 if i not in cost or newCost < cost[i]:
+#                     cost[i] = newCost
+#                     visited[i] = currentNode
+#                     queue.put((newCost, i))  # Thêm vào hàng đợi với trọng số mới
+
+#     # Trả về visited và đường đi từ start đến end      
+#     path = reconstructPath(visited, start, end)
+    
+#     return visited, path
+
+
+# def UCS(matrix, start, end):
+#     # TODO:  
+#     path = []
+#     visited = {}
+
+#     queue = []
+#     queue.append([0, start])
+#     visited.update({start: None})
+#     visit={}
+#     prev=start
+#     visited_temp={}
+
+#     while (len(queue)):
+#         queue = sorted(queue) # priority queue
+#         node = queue[-1]
+#         del queue[-1]
+#         prev = node[1]
+#         # node[0] *= -1
+
+#         if (node[1] == end):
+#             del queue[-1]
+#             queue = sorted(queue)
+#             break  
+
+#         if (node[1] not in visit):
+#             for i in range(len(matrix[node[1]])):
+#                 if(matrix[node[1]][i] != 0):
+#                     queue.append([node[0] + matrix[node[1]][i] *- 1, i])
+#                     visited.update({i: node})
+#                     visited_temp[i] = prev
+        
+#         visit[node[1]] = 1
+
+#     path = reconstructPath(visited_temp, start, end)
+#     return visited, path
+
+#-------------------------------------------------------------------------
+
+def GBFS(matrix, start, end):
+    """
+    Greedy Best First Search algorithm 
+    heuristic : edge weights
+     Parameters:
+    ---------------------------
+    matrix: np array 
+        The graph's adjacency matrix
+    start: integer 
+        starting node
+    end: integer
+        ending node
+   
+    Returns
+    ---------------------
+    visited
+        The dictionary contains visited nodes: each key is a visited node, 
+        each value is the key's adjacent node which is visited before key.
+    path: list
+        Founded path
+    """
+    # TODO: 
     path=[]
     visited={}
-    queue = deque([start])
-    
     return visited, path
 
-
+#-------------------------------------------------------------------------
 if __name__ == '__main__':
     matrix = []
     with open('input01.txt', 'r', encoding='utf-8') as data:
@@ -85,41 +176,12 @@ if __name__ == '__main__':
             items = line.rstrip().split(" ")
             matrix.append([int(item) for item in items]) 
 
-    visited, path = DFS(matrix, start, end);
+    visited, path = GBFS(matrix, start, end);
     print("path:", path)
     print("visited:", visited)
 
 
 
-
-
-
-
-# def GBFS(matrix, start, end):
-#     """
-#     Greedy Best First Search algorithm 
-#     heuristic : edge weights
-#      Parameters:
-#     ---------------------------
-#     matrix: np array 
-#         The graph's adjacency matrix
-#     start: integer 
-#         starting node
-#     end: integer
-#         ending node
-   
-#     Returns
-#     ---------------------
-#     visited
-#         The dictionary contains visited nodes: each key is a visited node, 
-#         each value is the key's adjacent node which is visited before key.
-#     path: list
-#         Founded path
-#     """
-#     # TODO: 
-#     path=[]
-#     visited={}
-#     return visited, path
 
 # def Astar(matrix, start, end, pos):
 #     """
