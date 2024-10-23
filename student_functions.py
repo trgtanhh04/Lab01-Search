@@ -12,6 +12,9 @@ def reconstructPath(visited, start, end):
         path.reverse()  # Đảo ngược để có đường đi từ start đến end
     return path
 
+def euclidNorm(x1, y1, x2, y2):
+    return np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+
 def BFS(matrix, start, end):
     #TODO:
     path = []
@@ -125,30 +128,33 @@ def GBFS(matrix, start, end):
     return visited, path
 
 def Astar(matrix, start, end, pos):
-    """
-    A* Search algorithm
-    heuristic: eclid distance based positions parameter
-     Parameters:
-    ---------------------------
-    matrix: np array UCS
-        The graph's adjacency matrix
-    start: integer 
-        starting node
-    end: integer
-        ending node
-    pos: dictionary. keys are nodes, values are positions
-        positions of graph nodes
-    Returns
-    ---------------------
-    visited
-        The dictionary contains visited nodes: each key is a visited node, 
-        each value is the key's adjacent node which is visited before key.
-    path: list
-        Founded path
-    """
-    # TODO: 
+    path = []
+    visited = {}
+    
+    #                                x1              y1            x2           y2 
+    heuristic = euclidNorm(pos[start][0], pos[start][1], pos[end][0], pos[end][1]) # calculate distance between start and end
+    pq = {start: (0, None, heuristic)} # create priority queue (cost, node, heuristic)
+    
+    while (len(pq) != 0):
+        node = min(pq.items(), key=lambda x: x[1][2])[0] # choose node with smallest cost to inspect
+        visited[node] = pq[node][1] # mark that node is visited
 
-    path=[]
-    visited={}
+        if (node == end):
+            break
+
+        for i in range(len(matrix)):
+            if (matrix[node][i] != 0 and i not in visited):
+                # calculate new heuristic
+                dist = matrix[node][i] + pq.get(node)[0] + euclidNorm(pos[i][0], pos[i][1], pos[end][0], pos[end][1])
+                final_cost = matrix[node][i] + pq.get(node)[0]
+
+                if (i not in pq or dist < pq.get(i)[2]): # choose better option
+                    pq[i] = (final_cost, node, dist) # update priority queue
+
+        del pq[node] # remove from queue after an inspection
+
+    path = reconstructPath(visited, start, end)
+
     return visited, path
+
 
