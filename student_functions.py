@@ -1,6 +1,7 @@
+from queue import PriorityQueue
 import numpy as np
 from collections import deque
-from queue import PriorityQueue
+import heapq
 
 def reconstructPath(visited, start, end):
     path = []
@@ -128,33 +129,32 @@ def GBFS(matrix, start, end):
     return visited, path
 
 def Astar(matrix, start, end, pos):
+    """Thuật toán A* tìm đường đi ngắn nhất từ start đến end."""
     path = []
     visited = {}
-    
-    #                                x1              y1            x2           y2 
-    heuristic = euclidNorm(pos[start][0], pos[start][1], pos[end][0], pos[end][1]) # calculate distance between start and end
-    pq = {start: (0, None, heuristic)} # create priority queue (cost, node, heuristic)
-    
-    while (len(pq) != 0):
-        node = min(pq.items(), key=lambda x: x[1][2])[0] # choose node with smallest cost to inspect
-        visited[node] = pq[node][1] # mark that node is visited
+    pq = []  # Sử dụng heapq làm priority queue
+    heapq.heappush(pq, (0, start, 0))  # (g_cost, node, f_cost)
+    costs = {start: 0}  # Chi phí từ start đến các nút
+    visited[start] = None  # Đánh dấu nút bắt đầu
 
-        if (node == end):
-            break
+    while pq:
+        current_cost, current_node, _ = heapq.heappop(pq)  # Lấy nút có heuristic thấp nhất
 
+        if current_node == end:
+            break  # Dừng lại nếu đã đến đích
+
+        # Duyệt qua các nút kề của current_node
         for i in range(len(matrix)):
-            if (matrix[node][i] != 0 and i not in visited):
-                # calculate new heuristic
-                dist = matrix[node][i] + pq.get(node)[0] + euclidNorm(pos[i][0], pos[i][1], pos[end][0], pos[end][1])
-                final_cost = matrix[node][i] + pq.get(node)[0]
+            if matrix[current_node][i] != 0:  # Nếu có đường đi
+                new_cost = current_cost + matrix[current_node][i]  # Tính g-cost mới (chi phí thực tế)
 
-                if (i not in pq or dist < pq.get(i)[2]): # choose better option
-                    pq[i] = (final_cost, node, dist) # update priority queue
+                # Nếu nút kề chưa được thăm hoặc tìm được đường đi tốt hơn
+                if i not in costs or new_cost < costs[i]:
+                    costs[i] = new_cost  # Cập nhật chi phí đến nút này
+                    heuristic = new_cost + euclidNorm(pos[i][0], pos[i][1], pos[end][0], pos[end][1])  # Tính f = g + h
+                    heapq.heappush(pq, (new_cost, i, heuristic))  # Thêm vào hàng đợi ưu tiên
+                    visited[i] = current_node  # Ghi nhận đường đi qua current_node
 
-        del pq[node] # remove from queue after an inspection
-
+    # Tái cấu trúc đường đi từ visited
     path = reconstructPath(visited, start, end)
-
     return visited, path
-
-
